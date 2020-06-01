@@ -1,11 +1,13 @@
 
-
+const messageQueue = require('./js/messageQueue')
 
 const keypressHandler = require('./js/keypressHandler');
-keypressHandler.initialize(message => console.log(`Message received: ${message}`));
+keypressHandler.initialize((message) => {messageQueue.enqueue(`${message}`)});
 
 const httpHandler = require('./js/httpHandler');
-
+// after initialize method is called, now http messageQueue has same properties as messageQueue.js
+httpHandler.initialize(messageQueue);
+// therefore, within httphandler, we can use the messageQueue's dequeue method to pass back in res.end()
 
 const http = require('http');
 const server = http.createServer(httpHandler.router);

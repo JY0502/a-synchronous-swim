@@ -23,12 +23,24 @@ describe('server responses', () => {
 
   it('should respond to a GET request for a swim command', (done) => {
     // write your test here
+    let {req, res} = server.mock('/', 'GET');
+    //variable string that we are expecting from the server
+    let commands = ['up', 'down', 'left', 'right'];
+
+    httpHandler.router(req, res);
+    console.log(res._data.toString());
+    // we know we want the sever to respond with a swim command, but is it a string, or the invocation of SwimTeam.move()?
+    expect(res._responseCode).to.equal(200);
+    expect(res._ended).to.equal(true);
+    //expect(res._data.toString()).to.be.empty;
+    expect(commands).to.contain(res._data.toString());//check if the string from the server is same as what we made in line 27
+
     done();
   });
 
-  xit('should respond with 404 to a GET request for a missing background image', (done) => {
+  it('should respond with 404 to a GET request for a missing background image', (done) => {
     httpHandler.backgroundImageFile = path.join('.', 'spec', 'missing.jpg');
-    let {req, res} = server.mock('FILL_ME_IN', 'GET');
+    let {req, res} = server.mock('./background.jpg', 'GET');
 
     httpHandler.router(req, res, () => {
       expect(res._responseCode).to.equal(404);
